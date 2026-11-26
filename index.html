@@ -122,7 +122,7 @@ function pl(color,i,d,x,y,z){const l=new THREE.PointLight(color,i,d,2);l.positio
 const seasonMats=[];function smat(cols,o){const m=T(cols[0],o);seasonMats.push({m,c:cols.map(c=>new THREE.Color(c))});return m}
 const banMats=[smat([0x6ab865,0x2f8a44,0xb09a3a,0x6a7a55],{side:DS}),smat([0x8ad27a,0x4aa850,0xd08a2e,0x7a8a60],{side:DS})];
 const potM1=smat([0x5aa85a,0x3f8a48,0xa07a30,0x5a6a4a],{flatShading:true}),potM2=smat([0x7cc070,0x5aa85a,0xc89038,0x6a7a58],{flatShading:true});
-const snowMat=T(0xeef4ff,{transparent:true,opacity:0,depthWrite:false});snowMat.visible=false;
+const snowMat=T(0xb4c0da,{transparent:true,opacity:0,depthWrite:false});snowMat.visible=false;
 const plights=[],neons=[],lanterns=[],holos=[],streaks=[],leaves=[],sways=[],drips=[],slides=[],blinks=[],eyes=[],flick=[],steam=[];
 function neon(a,b,color,w=0.05,ph){const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b),len=A.distanceTo(B),mid=A.clone().add(B).multiplyScalar(0.5);
  const c=new THREE.Color(color).lerp(new THREE.Color(0xffffff),0.35);
@@ -571,7 +571,7 @@ const PINK=new THREE.Color(0xf4a8cc),ORANGE=new THREE.Color(0xd8742a);
 
 /* ---------- snow ground, light cones ---------- */
 const snowGTex=cv(256,256,(g,w,h)=>{g.fillStyle='#f2f6ff';g.fillRect(0,0,w,h);g.globalCompositeOperation='destination-out';for(let i=0;i<150;i++){g.fillStyle=`rgba(0,0,0,${rnd(0.3,0.9)})`;g.beginPath();g.ellipse(rnd(0,w),rnd(0,h),rnd(4,20),rnd(2,9),rnd(0,3),0,7);g.fill()}});
-const snowGM=T(0xffffff,{map:rep(snowGTex,5,5),transparent:true,opacity:0,depthWrite:false});snowGM.visible=false;
+const snowGM=T(0xa6b2cc,{map:rep(snowGTex,5,5),transparent:true,opacity:0,depthWrite:false});snowGM.visible=false;
 for(const[w,d,x,y,z]of[[34,34,-4.5,0.1,-4.5]]){const m=new THREE.Mesh(new THREE.PlaneGeometry(w,d),snowGM);m.rotation.x=-Math.PI/2;m.position.set(x,y,z);m.receiveShadow=true;base.add(m)}
 const coneTex=cv(8,128,(g,w,h)=>{const gr=g.createLinearGradient(0,0,0,h);gr.addColorStop(0,'rgba(255,255,255,0.9)');gr.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=gr;g.fillRect(0,0,w,h)});
 const cones=[];function lightCone(x,y,z,r0,r1,h,color,op,th=0){const m=new THREE.MeshBasicMaterial({map:coneTex,color,transparent:true,opacity:op,blending:ADD,depthWrite:false,side:DS});const c=new THREE.Mesh(new THREE.CylinderGeometry(r0,r1,h,24,1,true),m);c.position.set(x,y-h/2,z);base.add(c);cones.push({m,op,th})}
@@ -589,11 +589,6 @@ const trainTex=cv(256,64,(g,w,h)=>{g.fillStyle='#1a1e2e';g.fillRect(0,0,w,h);g.f
 const trainMats=[basic(trainTex,{transparent:false}),basic(trainTex,{transparent:false}),new THREE.MeshBasicMaterial({color:0x2a2f40}),new THREE.MeshBasicMaterial({color:0x10131c}),new THREE.MeshBasicMaterial({color:0x2a2f40}),new THREE.MeshBasicMaterial({color:0x2a2f40})];
 const cars=[];for(let i=0;i<5;i++){const m=new THREE.Mesh(new THREE.BoxGeometry(1.4,1.3,4.2),trainMats);city.add(m);cars.push(m)}
 const headL=glow(city,0,0,0,0xfff2d0,4,0.9);
-const ghost=new THREE.Group();base.add(ghost);const ghostM=new THREE.LineBasicMaterial({color:0x3ae8ff,transparent:true,opacity:0.28,blending:ADD,depthWrite:false});
-for(const[x0,x1]of[[5.0,7.2],[11.8,14.6]]){let z=-21.9;while(z>-42){const d=rnd(2.6,4.2),h=rnd(2.6,6),b=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(x1-x0,h,d)),ghostM);b.position.set((x0+x1)/2,h/2-0.1,z-d/2);ghost.add(b);
- const rf=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.ConeGeometry((x1-x0)*0.75,0.9,4,1)),ghostM);rf.position.set((x0+x1)/2,h+0.35,z-d/2);rf.rotation.y=Math.PI/4;rf.scale.z=d/(x1-x0);ghost.add(rf);z-=d+rnd(0.1,0.6)}}
-{const pts=[];for(let x=7.4;x<=11.6;x+=0.7)pts.push(x,-0.08,-21.6,x,-0.08,-42);for(let z=-21.6;z>=-42;z-=1.5)pts.push(7.2,-0.08,z,11.8,-0.08,z);const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pts,3));ghost.add(new THREE.LineSegments(g,ghostM))}
-ghostM.vertexColors=true;ghostM.color.setHex(0xffffff);ghost.children.forEach(o=>{const p=o.geometry.attributes.position,c=new Float32Array(p.count*3),v=new THREE.Vector3();o.updateMatrix();for(let i=0;i<p.count;i++){v.fromBufferAttribute(p,i).applyMatrix4(o.matrix);const f=Math.max(0,Math.min(1,1-(-v.z-21.5)/16));c[i*3]=0.23*f;c[i*3+1]=0.91*f;c[i*3+2]=f}o.geometry.setAttribute('color',new THREE.BufferAttribute(c,3))});
 neon([-21.55,-0.12,-21.55],[12.55,-0.12,-21.55],0x3ae8ff,0.03);neon([-21.55,-0.12,-21.55],[-21.55,-0.12,12.55],0x3ae8ff,0.03);
 
 /* ---------- sky, moon, sun glow, lightning ---------- */
@@ -798,7 +793,7 @@ function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),0
  for(let i=0;i<sAct;i++){const k=i*3;sp[k+1]-=sv[i]*dt;sp[k]+=(Math.sin(t*0.8+sph[i])*0.35+wind*0.3)*dt;sp[k+2]+=Math.cos(t*0.6+sph[i])*0.25*dt;const x=sp[k],y=sp[k+1],z=sp[k+2];let hit=y<gy(x,z)+0.05||x>12.8;
   if(!hit)for(const c of covers)if(x>c[0]&&x<c[1]&&z>c[2]&&z<c[3]&&y<c[4]+0.5){hit=true;break}if(hit)resetFlake(i,true)}
  snG.attributes.position.needsUpdate=true;
- acc=Math.max(0,Math.min(1,acc+(snowL>0.5?dt*0.035:-dt*0.05)));snowMat.opacity=acc*0.95;snowMat.visible=acc>0.01;snowGM.opacity=acc*0.9;snowGM.visible=acc>0.01;
+ acc=Math.max(0,Math.min(1,acc+(snowL>0.5?dt*0.035:-dt*0.05)));snowMat.opacity=acc*0.95;snowMat.visible=acc>0.01;snowGM.opacity=acc*0.8;snowGM.visible=acc>0.01;
  water.color.copy(waterDark).lerp(ice,acc*0.55);pondMat.color.copy(waterDark).lerp(ice,acc*0.6);pondMat.opacity=0.8+acc*0.18;
  if(mirror){mirror.material.uniforms.strength.value=0.85*(1-acc)*(0.55+0.45*Math.min(1,rainL+wA.clear));mirror.material.uniforms.time.value=t}
  // lightning
@@ -817,7 +812,7 @@ function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),0
  for(const l of lanterns){const on=l.user?sm(l.th,l.th+0.12,lit):0;l.cur+=(on-l.cur)*Math.min(1,dt*3);const f=(0.85+0.15*nz(t+l.ph))*l.cur;l.mat.emissiveIntensity=0.9*f;l.sp.material.opacity=0.5*f;l.g.rotation.z=Math.sin(t*1.3+l.ph)*0.06*sw;l.g.rotation.x=Math.sin(t*0.9+l.ph*2)*0.04*sw}
  for(const c of cones)c.m.opacity=c.op*sm(c.th,c.th+0.15,lit)*(0.45+0.55*Math.min(1,rainL+snowL));
  for(const h of holos){if(h.g>0){h.g-=dt;h.me.position.x=h.x0+rnd(-0.06,0.06);h.m.opacity=h.op*rnd(0.2,1);h.me.scale.x=rnd(0.94,1.06)}else{if(Math.random()<0.006)h.g=rnd(0.08,0.3);h.me.position.x=h.x0;h.me.scale.x=1;h.m.opacity=h.op*(0.85+0.15*Math.sin(t*3+h.x0))}}
- ghostM.opacity=0.2+0.08*Math.sin(t*1.7)+(Math.random()<0.02?-0.15:0);
+ 
  tp.rotation.y=t*0.8;tp.position.y=1.55+Math.sin(t*1.6)*0.04;
  for(const s of streaks)s.m.opacity=s.op*(0.8+0.2*Math.sin(t*2.3+s.ph)+0.08*nz(t*0.5+s.ph))*(1-acc*0.6)*(0.7+0.3*Math.min(1,rainL+wA.clear))*(0.35+0.65*lit);
  for(const l of leaves)l.o.rotation.x=l.b+(Math.sin(t*1.7+l.ph)*l.a+Math.sin(t*4.1+l.ph)*0.02)*sw;
