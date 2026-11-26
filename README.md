@@ -2,6 +2,13 @@
 
 用 three.js 制作的赛博朋克中式庭院微缩模型：三渲二卡通渲染、雨夜霓虹、可自由拖拽旋转缩放。单个 HTML 文件，用浏览器直接打开即可（需联网加载 three.js 与字体）。
 
+## 在线预览
+
+- 最新版：https://faluoys.github.io/rainy-courtyard-diorama/
+- v1 初版：https://faluoys.github.io/rainy-courtyard-diorama/v1-base.html
+- v2 天气与季节：https://faluoys.github.io/rainy-courtyard-diorama/v2-weather-season.html
+- v3 声音、时段与互动：https://faluoys.github.io/rainy-courtyard-diorama/v3-sound-time-interaction.html
+
 ## 版本
 
 | 文件 | 内容 |
